@@ -82,14 +82,8 @@ app.post('/',async (req,res,next)=>{
             }
             console.log("resp:",resp)
             finalResp[property] = resp
-            
-        console.log(result.length)
-
-
         }
-        console.log(finalResp)
         res.json(finalResp)
-
     }
 
     else if(body.pageNumber && body.perPage) {
