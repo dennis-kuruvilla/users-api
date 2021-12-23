@@ -7,6 +7,7 @@ const UserGroups = require('./models/UserGroups')
 const User = require('./models/User')
 const UserInfo = require('./models/userInfo');
 const { response } = require('express');
+const {requestLogger,unknownEndpoint,errorHandler} = require('./utils/middleware')
 
 console.log('connecting to', process.env.MONGODB_URI)
 
@@ -22,13 +23,6 @@ const app = express()
 app.use(express.json())
 app.use(cors())
 
-const requestLogger = (request, response, next) => {
-    console.log('Method:', request.method)
-    console.log('Path:  ', request.path)
-    console.log('Body:  ', request.body)
-    console.log('---')
-    next()
-  }
 
 const validateGroups = (body) =>{
     const availableGroups = ['admin','superAdmin','fan','creator']
@@ -47,7 +41,6 @@ app.use(requestLogger)
 
 app.get('/', (req, res) => {
     UserInfo.find({}).populate(['userId','userGroupId'])
-    // UserInfo.find({}).populate(['userId','userGroupId']).limit(2).skip(0)
     .then(result=> res.json(result))
 
   })
@@ -55,13 +48,13 @@ app.get('/', (req, res) => {
 app.post('/',async (req,res,next)=>{
     
     const body = req.body
-    console.log(validateGroups(body))
+    
     if(validateGroups(body)){
 
         let groups =body.groups
         let finalResp = {}
         for(let property in groups){
-            console.log(property)
+           
             let propertyId = await UserGroups.findOne({"name": property})
             propertyId=propertyId._id.toString()
 
@@ -71,7 +64,7 @@ app.post('/',async (req,res,next)=>{
             let result =  await UserInfo.find({userGroupId : propertyId}).populate(['userId','userGroupId']).limit(perPage).skip(perPage*(pageNumber-1))
 
             if(result.length==0) result = { message: `This page is empty. Last page is ${Math.ceil(totalCount/perPage)}` };
-            console.log("results:",typeof result,result)
+           
             const resp= {
                 data: result,
                 pagination: {
@@ -80,7 +73,7 @@ app.post('/',async (req,res,next)=>{
                     totalCount
                 }
             }
-            console.log("resp:",resp)
+            
             finalResp[property] = resp
         }
         res.json(finalResp)
@@ -104,11 +97,15 @@ app.post('/',async (req,res,next)=>{
             }
             res.json(resp);
         }
-        console.log(result.length)
+      
 
     }
     else res.status(400).send({ error: 'Invalid Request' });
 })
+
+app.use(unknownEndpoint)
+
+app.use(errorHandler)
 
 const PORT = process.env.PORT || 3002 
 app.listen(PORT, () => {

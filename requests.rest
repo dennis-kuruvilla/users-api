@@ -11,7 +11,36 @@ Content-Type: application/json
             "perPage":2
           },
           "superAdmin": {
-            "pageNumber":1,
+            "pageNumber":2,
+            "perPage":2
+          },
+          "fan":{
+            "pageNumber":2,
+            "perPage":2
+          },
+          "creator":{
+            "pageNumber":2,
+            "perPage":2
+          }
+      }
+}
+
+
+###
+
+POST https://tranquil-cliffs-32037.herokuapp.com/
+Content-Type: application/json
+
+{
+      "pageNumber":1,
+      "perPage":3,
+      "grgoups": {
+          "admin": {
+            "pageNumber":4,
+            "perPage":2
+          },
+          "superAdmin": {
+            "pageNumber":2,
             "perPage":2
           }
       }

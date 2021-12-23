@@ -15,12 +15,13 @@ mongoose.connect(url)
 
 //61c3611906f9e36558281194 admin
 //61c35c034c9633b7ca2d891a superAdmin
+//61c361265225a779bdc56c6f fan
 
 
 
 const user = new User({
-    firstName: "Jamesy",
-    lastName: "Jamerson",
+    firstName: "Leonardo",
+    lastName: "Decaprio",
     createdAt: new Date()
 })
 
@@ -31,7 +32,7 @@ user.save()
 
 const userInfo = new UserInfo({
     userId: result._id.toString(),
-    userGroupId: "61c3611906f9e36558281194",
+    userGroupId: "61c36130850050e0b3c1014a",
     lastLoggedIn: new Date(),
     createdAt: new Date()
 })
